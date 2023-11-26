@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: web-app-virtual-service
+  namespace: k8s-workshop
+spec:
+  hosts:
+  - "host.k8s-workshop.com"
+  gateways:
+  - istio-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 4200
+        host: web-app-service
