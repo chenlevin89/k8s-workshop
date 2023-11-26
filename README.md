@@ -52,6 +52,15 @@ kubectl apply -f ./k8s --recursive
 127.0.0.1 api.k8s-workshop.com
 
 
+## Jaeger UI
+
+### Enable 
+cd istio-1.20.0/samples/addons
+kubectl apply -f ./jaeger.yaml
+
+### Expose on port 8080
+kubectl -n istio-system  port-forward svc/tracing  8080:80
+
 
 ## Build docker 
 
