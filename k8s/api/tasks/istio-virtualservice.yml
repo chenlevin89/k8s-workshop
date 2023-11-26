@@ -9,18 +9,27 @@ spec:
     - "tasks-api-service"         # Internal cluster communication ( Istio proxy (sidecar) ) 
   gateways:
     - istio-gateway
-    - mesh                         # Require for internal cluster communication
+    - mesh                        # Require for internal cluster communication
   http:
-    - route:
-      - destination:
-          port:
-            number: 3112
-          host: tasks-api-service
-          subset: v1
-        weight: 100
-      - destination:
-          port:
-            number: 3112
-          host: tasks-api-service
-          subset: v2
-        weight: 0
+  - match:
+    - uri:
+        prefix: /
+      headers:                    # If request sent with canary-version header equal version-1 
+        canary-version:           # curl -H 'canary-version: version-2' http://api.k8s-workshop.com/tasks 
+          exact: version-2
+    fault:                        # Add 5s delay
+      delay:
+        percent: 0
+        fixedDelay: 5s
+    route:
+    - destination:
+        port:
+          number: 3112
+        host: tasks-api-service
+        subset: v2
+  - route:
+    - destination:
+        port:
+          number: 3112
+        host: tasks-api-service
+        subset: v1
