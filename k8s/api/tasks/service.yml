@@ -1,0 +1,13 @@
+# Service definition for web-api
+apiVersion: v1
+kind: Service
+metadata:
+  name: tasks-api-service
+  namespace: k8s-workshop
+spec:
+  selector:
+    app: tasks-api
+  ports:
+  - port: 3112
+    targetPort: 3112
+  type: ClusterIP

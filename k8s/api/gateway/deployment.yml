@@ -1,0 +1,40 @@
+# Deployment definition for wep-api pod
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-deployment
+  namespace: k8s-workshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: api-gateway
+        version: v1
+    spec:
+      containers:
+        - name: api-gateway
+          image: chenlevin/k8s-workshop-api-gateway
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3110
+          env:
+            - name: AUTH_SERVICE
+              value: http://auth-api:3111
+            - name: TASKS_SERVICE
+              value: http://tasks-api:3112
+          resources:
+            requests:
+              cpu: 500m
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 3110
+            initialDelaySeconds: 10
+            periodSeconds: 5
+

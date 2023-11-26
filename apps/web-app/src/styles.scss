@@ -1,0 +1,14 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import url("https://fonts.googleapis.com/css?family=Lobster");
+
+body, html{
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  font-family: 'Lobster', serif;
+}
+
+* {
+  box-sizing: border-box;
+}

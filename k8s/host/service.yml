@@ -1,0 +1,13 @@
+# Service definition for web-app
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+  namespace: k8s-workshop
+spec:
+  selector:
+    app: web-app
+  ports:
+  - port: 4200
+    targetPort: 4200
+  type: ClusterIP

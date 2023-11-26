@@ -1,0 +1,8 @@
+<h1>ArgoCD Workshop</h1>
+<div class="container">
+  <div class="image-container">
+    <img height="100%" width="auto" src="../assets/argo-icon.png" />
+  </div>
+  <app-list [list]="tasks$ | async" (itemChecked)="onItemChecked($event)"></app-list>
+</div>
+

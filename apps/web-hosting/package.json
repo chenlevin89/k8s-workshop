@@ -1,0 +1,11 @@
+{
+  "name": "web-hosting",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "express": "4.18.1",
+    "http-proxy-middleware": "^2.0.6",
+    "compression": "^1.7.4"
+  }
+}

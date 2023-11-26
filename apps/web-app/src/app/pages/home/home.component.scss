@@ -1,0 +1,28 @@
+:host {
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 600;
+  }
+
+  .container {
+    display: flex;
+    width: 50vw;
+    box-shadow: 1px 1px 4px 2px orange;
+    padding: 40px;
+
+    .image-container {
+      height: 200px;
+    }
+
+    app-list{
+      flex:1;
+    }
+  }
+}

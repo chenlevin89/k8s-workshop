@@ -1,0 +1,105 @@
+version: '3'
+
+services:
+
+    mysql:
+        image: mysql
+        restart: always
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_DATABASE: main
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - ./initdb-scripts:/docker-entrypoint-initdb.d/:ro
+        healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            timeout: 10s
+            retries: 10
+
+    api-gateway:
+        image: 'chenlevin/k8s-workshop-api-gateway'
+        build:
+          context: ./apps/api/gateway
+          dockerfile: ./Dockerfile.yml
+        ports:
+            - 3110:3110
+        volumes:
+            - ./apps/api/gateway:/usr/local/api
+            - /usr/local/api/node_modules/
+        environment:
+            PORT: 3110
+            AUTH_SERVICE: http://auth-api:3111
+            TASKS_SERVICE: http://tasks-api:3112
+        command: npm run serve
+        healthcheck:
+            test: curl --fail http://localhost:3110/healthcheck
+            timeout: 10s
+            retries: 10
+
+    auth-api:
+        image: 'chenlevin/k8s-workshop-auth-api'
+        build:
+          context: ./apps/api/auth
+          dockerfile: ./Dockerfile.yml
+        depends_on:
+            mysql:
+              condition: service_healthy
+        ports:
+            - 3111:3111
+        volumes:
+            - ./apps/api/auth:/usr/local/api
+            - /usr/local/api/node_modules/
+        environment:
+            PORT: 3111
+            MYSQL_HOST: mysql
+            MYSQL_PORT: 3306
+        command: npm run serve
+        healthcheck:
+            test: curl --fail http://localhost:3111/healthcheck
+            timeout: 10s
+            retries: 10
+
+    tasks-api:
+        image: 'chenlevin/k8s-workshop-tasks-api'
+        build:
+          context: ./apps/api/tasks
+          dockerfile: ./Dockerfile.yml
+        depends_on:
+            mysql:
+              condition: service_healthy
+        ports:
+            - 3112:3112
+        volumes:
+            - ./apps/api/tasks:/usr/local/api
+            - /usr/local/api/node_modules/
+        environment:
+            PORT: 3112
+            MYSQL_HOST: mysql
+            MYSQL_PORT: 3306
+        command: npm run serve
+        healthcheck:
+            test: curl --fail http://localhost:3112/healthcheck
+            timeout: 10s
+            retries: 10
+
+    web-app:
+        image: 'chenlevin/k8s-workshop-web-app'
+        build:
+          context: ./apps/web-app
+          dockerfile: ./Dockerfile.yml
+        ports:
+            - 4200:4200
+        volumes:
+            - ./apps/web-app:/usr/local/web-app
+            - /usr/local/web-app/node_modules/
+        environment:
+            PORT: 4200
+            PROXY_PATH: api-gateway:3110
+        # command: tail -f /dev/null
+        command: npm run start:docker
+        healthcheck:
+            test: curl --fail http://localhost:4200/
+            timeout: 10s
+            retries: 20
+

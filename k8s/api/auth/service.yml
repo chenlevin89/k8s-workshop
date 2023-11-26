@@ -1,0 +1,13 @@
+# Service definition for web-api
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-api-service
+  namespace: k8s-workshop
+spec:
+  selector:
+    app: auth-api
+  ports:
+  - port: 3111
+    targetPort: 3111
+  type: ClusterIP

@@ -1,0 +1,48 @@
+:host {
+    display: block;
+    width: var(--skeleton-width);
+    height: var(--skeleton-height);
+    margin:var(--skeleton-margin);
+    background: #F1F3F4 no-repeat;
+    border-radius: 8px;
+    position: relative;
+}
+
+:host::after{
+    content: "";
+    width: 110%;
+    height: 100%;
+    left: -20%;
+    opacity: 0;
+    position:absolute;
+    animation: shine 1s ease-in-out  infinite;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    background: rgba(255,255,255,0);
+    background: linear-gradient(to right, rgba(255,255,255,0) 8%, #fafafb 18%, rgba(255,255,255,0) 33%);
+}
+
+:host.ellipse {
+    border-radius: 4px;
+}
+
+
+@keyframes shine {
+    0% {
+        opacity: 0;
+        transition-property: left, opacity;
+        transition-duration: 0.7s, 0.7s, 0.15s;
+        transition-timing-function: ease;
+    }
+
+    30% {
+        opacity: 1;
+        transition-property: left, top, opacity;
+    }
+
+    100% {
+        opacity: 0;
+        left: 110%;
+        transition-property: left, opacity;
+    }
+}

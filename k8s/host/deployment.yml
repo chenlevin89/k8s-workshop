@@ -1,0 +1,34 @@
+# Deployment definition for web-app pod
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app-deployment
+  namespace: k8s-workshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+        - name: web-app
+          image: chenlevin/k8s-workshop-web-app
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4200
+          env:
+            - name: PORT
+              value: "4200"
+            - name: PROXY_PATH
+              value: http://api-gateway-service:3110
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 4200
+            initialDelaySeconds: 10
+            periodSeconds: 5
+

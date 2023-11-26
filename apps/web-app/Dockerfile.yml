@@ -1,0 +1,17 @@
+FROM node:14.15-alpine
+
+WORKDIR /usr/local/web-app
+
+COPY package*.json /usr/local/web-app/
+
+RUN npm ci
+
+RUN apk --update --no-cache add curl
+
+COPY . /usr/local/web-app/
+
+EXPOSE 4200
+
+CMD ["npm", "run", "build"]
+
+

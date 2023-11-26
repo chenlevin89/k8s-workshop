@@ -1,0 +1,11 @@
+<ng-container *ngFor="let task of list">
+  <div class="list-item"
+       *isSkeletonLoading="loadingMapping[task.ID] !== undefined  && loadingMapping[task.ID] === task.Status; className:'ellipse'; height: '30px' ">
+    <input type="checkbox"
+           [checked]="!!task.Status"
+           [id]="task.ID"
+           (click)="onItemChecked($event,task)">
+    <label [innerText]="task.Title"
+           [for]="task.ID"></label>
+  </div>
+</ng-container>
