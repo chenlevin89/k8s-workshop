@@ -1,0 +1,42 @@
+# Deployment definition for wep-api pod
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tasks-api-deployment-v2
+  namespace: k8s-workshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tasks-api
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: tasks-api
+        version: v2
+    spec:
+      containers:
+        - name: tasks-api
+          image: chenlevin/k8s-workshop-tasks-api:v2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3112
+          env:
+            - name: PORT
+              value: "3112"
+            - name: MYSQL_HOST
+              value: mysql-service
+            - name: MYSQL_PORT
+              value: "3306"
+          resources:
+            requests:
+              cpu: 500m
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 3112
+            initialDelaySeconds: 10
+            periodSeconds: 5
+

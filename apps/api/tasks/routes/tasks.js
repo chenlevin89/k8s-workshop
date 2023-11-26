@@ -4,7 +4,7 @@ var mysqlQuery = require('../utils/mysql');
 
 router.get('/', async (req, res) => {
   const result = await mysqlQuery('SELECT * FROM main.Tasks');
-  // result.forEach(curr => curr.Title = `V2 - ${curr.Title}` );
+  result.forEach(curr => curr.Title = `V2 - ${curr.Title}` );
   res.json(result);
 });
 
