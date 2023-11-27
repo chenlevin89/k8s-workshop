@@ -5,10 +5,8 @@ metadata:
   namespace: k8s-workshop
 spec:
   hosts:
-    - "api.k8s-workshop.com"      # External cluster communication
     - "tasks-api-service"         # Internal cluster communication ( Istio proxy (sidecar) ) 
   gateways:
-    - istio-gateway
     - mesh                        # Require for internal cluster communication
   http:
   - match:

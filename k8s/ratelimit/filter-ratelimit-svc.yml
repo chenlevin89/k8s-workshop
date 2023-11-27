@@ -1,0 +1,45 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: filter-ratelimit-svc
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: VIRTUAL_HOST # For api virtual service
+      match:
+        context: GATEWAY
+        routeConfiguration:
+          vhost:
+            name: api.k8s-workshop.com:80
+            route:
+              action: ANY
+      patch:
+        operation: MERGE
+        # Applies the rate limit rules.
+        value:
+          rate_limits:
+            - actions: # any actions in here
+              - request_headers:
+                  header_name: ":path"
+                  descriptor_key: "API_PATH"
+    - applyTo: VIRTUAL_HOST # For api host service
+      match:
+        context: GATEWAY
+        routeConfiguration:
+          vhost:
+            name: host.k8s-workshop.com:80
+            route:
+              action: ANY
+      patch:
+        operation: MERGE
+        # Applies the rate limit rules.
+        value:
+          rate_limits:
+            - actions: # any actions in here
+              - request_headers:
+                  header_name: ":path"
+                  descriptor_key: "HOST_PATH"
+
