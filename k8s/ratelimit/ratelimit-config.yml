@@ -8,13 +8,17 @@ data:
     descriptors:
       - key: API_PATH
         value: "/tasks"
-        rate_limit:
-          unit: minute
-          requests_per_unit: 2
+        descriptors:
+          - key: remote_address
+            rate_limit:
+              unit: minute
+              requests_per_unit: 2
       - key: API_PATH
-        rate_limit:
-          unit: minute
-          requests_per_unit: 5
+        descriptors:
+          - key: remote_address
+            rate_limit:
+              unit: minute
+              requests_per_unit: 5
       - key: HOST_PATH
         rate_limit:
           unit: minute

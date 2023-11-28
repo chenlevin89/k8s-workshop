@@ -25,6 +25,7 @@ spec:
               - request_headers:
                   header_name: ":path"
                   descriptor_key: "API_PATH"
+              - remote_address: {}
     - applyTo: VIRTUAL_HOST # For api host service
       match:
         context: GATEWAY
