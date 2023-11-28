@@ -8,7 +8,7 @@ spec:
     labels:
       istio: ingressgateway
   configPatches:
-    - applyTo: VIRTUAL_HOST # For api virtual service
+    - applyTo: VIRTUAL_HOST
       match:
         context: GATEWAY
         routeConfiguration:
@@ -18,15 +18,14 @@ spec:
               action: ANY
       patch:
         operation: MERGE
-        # Applies the rate limit rules.
         value:
           rate_limits:
-            - actions: # any actions in here
+            - actions:
               - request_headers:
                   header_name: ":path"
                   descriptor_key: "API_PATH"
               - remote_address: {}
-    - applyTo: VIRTUAL_HOST # For api host service
+    - applyTo: VIRTUAL_HOST
       match:
         context: GATEWAY
         routeConfiguration:
@@ -36,10 +35,9 @@ spec:
               action: ANY
       patch:
         operation: MERGE
-        # Applies the rate limit rules.
         value:
           rate_limits:
-            - actions: # any actions in here
+            - actions:
               - request_headers:
                   header_name: ":path"
                   descriptor_key: "HOST_PATH"

@@ -5,11 +5,9 @@ metadata:
   namespace: istio-system
 spec:
   workloadSelector:
-    # select by label in the same namespace
     labels:
       istio: ingressgateway
   configPatches:
-    # The Envoy config you want to modify
     - applyTo: HTTP_FILTER
       match:
         context: GATEWAY
@@ -21,12 +19,10 @@ spec:
                 name: "envoy.filters.http.router"
       patch:
         operation: INSERT_BEFORE
-        # Adds the Envoy Rate Limit Filter in HTTP filter chain.
         value:
           name: envoy.filters.http.ratelimit
           typed_config:
             "@type": type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit
-            # domain can be anything! Match it to the ratelimter service config
             domain: "*.k8s-workshop.com"
             failure_mode_deny: true
             timeout: 10s

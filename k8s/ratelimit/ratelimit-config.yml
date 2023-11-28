@@ -12,14 +12,14 @@ data:
           - key: remote_address
             rate_limit:
               unit: minute
-              requests_per_unit: 2
+              requests_per_unit: 100
       - key: API_PATH
         descriptors:
           - key: remote_address
             rate_limit:
               unit: minute
-              requests_per_unit: 5
+              requests_per_unit: 200
       - key: HOST_PATH
         rate_limit:
           unit: minute
-          requests_per_unit: 10
+          requests_per_unit: 500
