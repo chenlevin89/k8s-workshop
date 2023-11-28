@@ -11,6 +11,8 @@ spec:
       app: web-app
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
         app: web-app
     spec:
@@ -25,6 +27,7 @@ spec:
               value: "4200"
             - name: PROXY_PATH
               value: http://api-gateway-service:3110
+              # value: http://api.k8s-workshop.com
           livenessProbe:
             httpGet:
               path: /healthcheck

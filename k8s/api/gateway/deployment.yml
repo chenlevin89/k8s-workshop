@@ -24,10 +24,12 @@ spec:
           ports:
             - containerPort: 3110
           env:
+            - name: PORT
+              value: "3110"
             - name: AUTH_SERVICE
-              value: http://auth-api:3111
+              value: http://auth-api-service:3111
             - name: TASKS_SERVICE
-              value: http://tasks-api:3112
+              value: http://tasks-api-service:3112
           resources:
             requests:
               cpu: 500m

@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: tasks-api-virtual-service
+  namespace: k8s-workshop
+spec:
+  hosts:
+    - "tasks-api-service"         # Internal cluster communication ( Istio proxy (sidecar) ) 
+  gateways:
+    - mesh                        # Require for internal cluster communication
+  http:
+  - match:
+    - uri:
+        prefix: /
+      headers:                    # If request sent with canary-version header equal version-1 
+        canary-version:           # curl -H 'canary-version: version-2' http://api.k8s-workshop.com/tasks 
+          exact: version-2
+    fault:                        # Add 5s delay
+      delay:
+        percent: 0
+        fixedDelay: 5s
+    route:
+    - destination:
+        port:
+          number: 3112
+        host: tasks-api-service
+        subset: v2
+  - route:
+    - destination:
+        port:
+          number: 3112
+        host: tasks-api-service
+        subset: v1

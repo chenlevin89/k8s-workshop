@@ -2,30 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-api-deployment
+  name: tasks-api-deployment-v2
   namespace: k8s-workshop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth-api
+      app: tasks-api
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
-        app: auth-api
-        version: v1
+        app: tasks-api
+        version: v2
     spec:
       containers:
-        - name: auth-api
-          image: chenlevin/k8s-workshop-auth-api
+        - name: tasks-api
+          image: chenlevin/k8s-workshop-tasks-api:v2
           imagePullPolicy: Always
           ports:
-            - containerPort: 3111
+            - containerPort: 3112
           env:
             - name: PORT
-              value: "3111"
+              value: "3112"
             - name: MYSQL_HOST
               value: mysql-service
             - name: MYSQL_PORT
@@ -36,7 +36,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthcheck
-              port: 3111
+              port: 3112
             initialDelaySeconds: 10
             periodSeconds: 5
 
