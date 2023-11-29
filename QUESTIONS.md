@@ -17,3 +17,17 @@
 6. How do you manage requests that required data form multiple services ? 
    6.1 are you using orchestrator service ?
    6.2 how do you manage validation ( federated validations )
+7. How do you manage api breaking changes ?
+8. Scaling approach ( keda / knative ) ?
+9. How do you mange failure request to multiple services ( like transaction rollbacks )  
+
+
+
+
+
+
+
+
+# High Level Design
+1. Async communication ( event driven design )
+2. Istio tace id passing and login
