@@ -23,9 +23,17 @@ services:
           dockerfile: ./Dockerfile.yml
         ports:
             - 3110:3110
-        volumes:
-            - ./apps/api/gateway:/usr/local/api
-            - /usr/local/api/node_modules/
+        # volumes:
+        #     - ./apps/api/gateway:/usr/local/api
+        #     - /usr/local/api/node_modules/
+        develop:
+          watch:
+            - action: sync
+              path: ./apps/api/gateway
+              target: /usr/local/api
+            - action: rebuild
+              path: ./apps/api/gateway/package.json
+              target: /usr/local/api/package.json
         environment:
             PORT: 3110
             AUTH_SERVICE: http://auth-api:3111
@@ -45,9 +53,17 @@ services:
               condition: service_healthy
         ports:
             - 3111:3111
-        volumes:
-            - ./apps/api/auth:/usr/local/api
-            - /usr/local/api/node_modules/
+        # volumes:
+        #     - ./apps/api/auth:/usr/local/api
+        #     - /usr/local/api/node_modules/
+        develop:
+          watch:
+            - action: sync
+              path: ./apps/api/auth
+              target: /usr/local/api
+            - action: rebuild
+              path: ./apps/api/auth/package.json
+              target: /usr/local/api/package.json
         environment:
             PORT: 3111
             MYSQL_HOST: mysql
@@ -67,16 +83,56 @@ services:
               condition: service_healthy
         ports:
             - 3112:3112
-        volumes:
-            - ./apps/api/tasks:/usr/local/api
-            - /usr/local/api/node_modules/
+        # volumes:
+        #     - ./apps/api/tasks:/usr/local/api
+        #     - /usr/local/api/node_modules/
+        develop:
+          watch:
+            - action: sync
+              path: ./apps/api/tasks
+              target: /usr/local/api
+            - action: rebuild
+              path: ./apps/api/tasks/package.json
+              target: /usr/local/api/package.json
         environment:
             PORT: 3112
             MYSQL_HOST: mysql
             MYSQL_PORT: 3306
+            USER_API: http://user-api:3113
         command: npm run serve
         healthcheck:
             test: curl --fail http://localhost:3112/healthcheck
+            timeout: 10s
+            retries: 10
+
+
+    user-api:
+        build:
+          context: ./apps/api/user
+          dockerfile: ./Dockerfile.yml
+        depends_on:
+            mysql:
+              condition: service_healthy
+        ports:
+            - 3113:3113
+        # volumes:
+        #     - ./apps/api/user:/usr/local/api
+        #     - /usr/local/api/node_modules/
+        develop:
+          watch:
+            - action: sync
+              path: ./apps/api/user
+              target: /usr/local/api
+            - action: rebuild
+              path: ./apps/api/user/package.json
+              target: /usr/local/api/package.json
+        environment:
+            PORT: 3113
+            MYSQL_HOST: mysql
+            MYSQL_PORT: 3306
+        command: npm run serve
+        healthcheck:
+            test: curl --fail http://localhost:3113/healthcheck
             timeout: 10s
             retries: 10
 
@@ -86,9 +142,20 @@ services:
           dockerfile: ./Dockerfile.yml
         ports:
             - 4200:4200
-        volumes:
-            - ./apps/web-app:/usr/local/web-app
-            - /usr/local/web-app/node_modules/
+        # volumes:
+        #     - ./apps/web-app:/usr/local/web-app
+        #     - /usr/local/web-app/node_modules/
+        develop:
+          watch:
+            - action: sync
+              path: ./apps/web-app
+              target: /usr/local/web-app
+            - action: rebuild
+              path: ./apps/web-app/package.json
+              target: /usr/local/web-app/package.json
+            - action: sync+restart
+              path: ./apps/web-app/angular.json
+              target: /usr/local/web-app/angular.json
         environment:
             PORT: 4200
             PROXY_PATH: api-gateway:3110

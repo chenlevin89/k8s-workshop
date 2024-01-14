@@ -1,0 +1,18 @@
+FROM node:14.15-alpine
+
+WORKDIR /usr/local/api
+
+COPY package*.json /usr/local/api/
+
+RUN npm ci
+
+RUN apk --update --no-cache add curl
+
+COPY . /usr/local/api/
+
+ENV SUPPRESS_NO_CONFIG_WARNING 1
+EXPOSE 3111
+
+CMD ["npm", "run", "start"]
+
+
